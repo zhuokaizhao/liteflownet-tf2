@@ -1,5 +1,12 @@
+import os
+# not printing tf warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+# preferably use the non-display gpu
+os.environ['CUDA_VISIBLE_DEVICES']='1'
+
 import numpy as np
 import tensorflow.compat.v1 as tf
+# import tensorflow as tf
 import argparse
 
 from model import LiteFlowNet
@@ -36,7 +43,7 @@ for idx, layer in enumerate(net.layer):
             bias = net.layer[idx].blobs[1].data
             caffe_weights[layer.name + '/bias'] = np.array(bias)
 
-        print layer.name, net.layer[idx].blobs[0].shape.dim
+        print(layer.name, net.layer[idx].blobs[0].shape.dim)
 
 
 for i in [2]:
@@ -169,7 +176,7 @@ for j in [-1, -2, -3, -4, -5]:
 weights_mapping.update(m_weights)
 
 for v in sorted(weights_mapping.values()):
-    print v
+    print(v)
 
 sess = tf.Session()
 
@@ -177,7 +184,7 @@ tfvarsg = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope='flownet')
 tfvars = {v.name[:-2]: v for v in tfvarsg}
 
 for v in sorted(tfvarsg, key=lambda x: x.name):
-    print v.name
+    print(v.name)
 
 for state in sorted(caffe_weights):
     data = caffe_weights[state]
