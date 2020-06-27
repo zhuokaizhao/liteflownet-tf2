@@ -53,6 +53,8 @@ def main():
     tens2 = tf.placeholder(tf.float32, shape=[1, 1024, 1024, 1])
     out = model(tens1, tens2)
 
+    # model.summary()
+
     saver = tf.train.Saver()
     saver.restore(sess, model_path)
 
@@ -66,24 +68,27 @@ def main():
     # input in bgr format
     flow = sess.run(out, feed_dict={tens1: inp1, tens2: inp2})[0, :h, :w, :]
 
+    # print(flow.shape)
+    # print(flow)
+
     # visualize optical flow
     flow_color = flow_to_color(flow, convert_to_bgr=False)
     flow_image = Image.fromarray(flow_color)
     # flow_image.show()
-    out_path = os.path.join(out_dir, 'LFT_result1.png')
+    out_path = os.path.join(out_dir, 'LFT_vel_240_240_241.png')
     flow_image.save(out_path)
     print(f'Resulting image has been saved to {out_path}')
 
     # save optical flow to file
-    # flow_path = os.path.join(flow_dir, 'LFT_flow.npy')
-    # flow_str = np.array(np.transpose(flow).transpose([1, 2, 0]), np.float32)
-    # np.save(flow_np, flow_path)
+    flow_path = os.path.join(flow_dir, 'LFT_flow_240_240_241.npy')
+    np.save(flow_path, flow)
+    print(f'Flow has been saved to {flow_path}')
     # objectOutput = open(args.flow, 'wb')
     # np.array([80, 73, 69, 72], np.uint8).tofile(objectOutput)
     # np.array([flow.shape[1], flow.shape[0]], np.int32).tofile(objectOutput)
     # np.array(np.transpose(flow).transpose([1, 2, 0]), np.float32).tofile(objectOutput)
     # objectOutput.close()
-    # print(f'Flow has been saved to {flow_path}')
+
 
 
 if __name__ == "__main__":
